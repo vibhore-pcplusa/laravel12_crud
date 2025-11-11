@@ -1,0 +1,27 @@
+#version: '3.8'
+services:
+  laravel:
+    image: php:8.2-apache
+    container_name: laravel12_app
+    ports:
+      - "8082:80"     # host:container
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - db
+    command: >
+      bash -c "echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+      && sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+      && docker-php-ext-install pdo pdo_mysql
+      && apache2-foreground"
+  db:
+    image: mysql:8
+    container_name: laravel12_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel12
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    ports:
+      - "3308:3306"   # use 3308 to avoid conflict with previous project
