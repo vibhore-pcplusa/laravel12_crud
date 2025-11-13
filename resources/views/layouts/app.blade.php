@@ -33,4 +33,7 @@
             </main>
         </div>
     </body>
+    <footer class="bg-gray-100 text-center text-sm text-gray-600 py-4 mt-8 border-t">
+        <p>&copy; {{ date('Y') }} My Laravel App. All rights reserved.</p>
+    </footer>
 </html>
