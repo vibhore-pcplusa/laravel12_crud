@@ -10,36 +10,48 @@
                 <div class="max-w-xl">
                     <h1 class="text-3xl my-2">All Posts</h1>
 
-                    <a href="{{ route('posts.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-lg">Create New Post</a>
+                    <a href="{{ route('posts.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 my-2 px-4 rounded shadow-lg">Create New Post</a>
 
                     @if (session('success'))
-                        <p style="color: green;">{{ session('success') }}</p>
+                        <p style="color: green;margin-top:15px">{{ session('success') }}</p>
                     @endif
 
-                    <table border="1" cellpadding="10">
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>Actions</th>
-                        </tr>
-
-                        @foreach ($posts as $post)
-                        <tr>
-                            <td>{{ $post->id }}</td>
-                            <td>{{ $post->title }}</td>
-                            <td>{{ $post->content }}</td>
-                            <td>
-                                <a href="{{ route('posts.edit', $post->id) }}">Edit</a> |
-                                <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return confirm('Delete this post?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </table>
+                    <div class="overflow-x-auto bg-white shadow-md rounded-lg mt-5">
+                        <table class="min-w-full border border-gray-200 text-sm text-left text-gray-700">
+                            <thead class="bg-gray-100 text-gray-900 uppercase text-xs">
+                                <tr>
+                                    <th class="px-6 py-3 border-b">ID</th>
+                                    <th class="px-6 py-3 border-b">Title</th>
+                                    <th class="px-6 py-3 border-b">Content</th>
+                                    <th class="px-6 py-3 border-b text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach ($posts as $post)
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4">{{ $post->id }}</td>
+                                        <td class="px-6 py-4 font-medium text-gray-800">{{ $post->title }}</td>
+                                        <td class="px-6 py-4 text-gray-600">{{ $post->content }}</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <a href="{{ route('posts.edit', $post->id) }}"
+                                            class="text-blue-600 hover:text-blue-800 font-semibold mr-3">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        onclick="return confirm('Delete this post?')"
+                                                        class="text-red-600 hover:text-red-800 font-semibold">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
