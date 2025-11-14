@@ -8,8 +8,8 @@ use Tests\TestCase;
 
 class DbCheckTest extends TestCase
 {
-    public function test_database_used()
+    public function not_test_database_used()
     {
-        dd(config('database.default'), config('database.connections'));
+        //dd(config('database.default'), config('database.connections'));
     }
 }
