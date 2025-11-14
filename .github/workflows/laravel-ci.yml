@@ -49,6 +49,9 @@ jobs:
 
       - name: Setup Application Environment
         run: cp .env.example .env
+          echo "SESSION_DRIVER=file" >> .env
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=:memory:" >> .env
 
       - name: Generate app key
         run: php artisan key:generate
