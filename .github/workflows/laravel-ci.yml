@@ -56,4 +56,4 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: php artisan test --parallel
+        run: php artisan test
