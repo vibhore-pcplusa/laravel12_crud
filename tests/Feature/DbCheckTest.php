@@ -8,9 +8,9 @@ use Tests\TestCase;
 
 class DbCheckTest extends TestCase
 {
-    public function test_database_used()
+    public function not_test_database_used()
     {
-        dump(config('database.default'), config('database.connections'));
+        //dump(config('database.default'), config('database.connections'));
         $this->assertTrue(true);
     }
 }
