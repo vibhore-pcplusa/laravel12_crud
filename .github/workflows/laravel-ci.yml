@@ -43,8 +43,10 @@ jobs:
 
       - name: Configure SQLite for Tests
         run: |
+          mkdir -p database
+          touch database/database.sqlite
           echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=:memory:" >> .env
+          echo "DB_DATABASE=database/database.sqlite" >> .env
 
       # Generate app key
       - name: Generate app key
