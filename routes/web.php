@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Events\MessageSent;
 
 Route::get('/', function () {
     return redirect()->route('login');  //view('login');
@@ -24,5 +25,10 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('posts', PostController::class)->middleware(['auth', 'verified']);//->name('posts');
 
+Route::get('/send', function () {
+    broadcast(new MessageSent("Hello from Laravel!"));
+
+    return "Message broadcasted!";
+});
 
 require __DIR__.'/auth.php';

@@ -8,9 +8,16 @@ services:
     container_name: laravel12_app
     ports:
       - "8082:80"
+      - "6001:6001"    # <-- WebSocket/reverb server port
     volumes:
       - .:/var/www/html
       - ./apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    command: >
+      bash -c "
+        php artisan migrate --force &&
+        php artisan websockets:serve &
+        apache2-foreground
+      "
     depends_on:
       - db
 
