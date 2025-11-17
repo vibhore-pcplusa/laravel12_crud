@@ -69,4 +69,4 @@ jobs:
         
       # Run tests
       - name: Run Tests
-        run: php artisan test --without-tty
+        run: vendor/bin/phpunit --no-coverage 2>/dev/null
