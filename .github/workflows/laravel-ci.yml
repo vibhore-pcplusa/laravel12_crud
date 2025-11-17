@@ -69,4 +69,4 @@ jobs:
         
       # Run tests
       - name: Run Tests
-        run: php artisan test --debug
+        run: php artisan test --no-interaction --debug
