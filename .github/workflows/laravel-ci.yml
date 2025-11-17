@@ -69,4 +69,4 @@ jobs:
         
       # Run tests
       - name: Run Tests
-        run: php artisan test --no-interaction --debug
+        run: php artisan test  #--debug  ,when your test cases fail you can uncomment --debug to see any warning problem. 
