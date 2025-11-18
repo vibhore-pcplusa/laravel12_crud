@@ -16,5 +16,5 @@ window.Echo = new Echo({
     wssPort: import.meta.env.VITE_REVERB_PORT ?? 6001,
     forceTLS: false,
     encrypted: false,
-    enabledTransports: ['ws', 'wss'],
+    enabledTransports: ['ws'] 
 });
