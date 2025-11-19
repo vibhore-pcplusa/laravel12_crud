@@ -64,12 +64,24 @@ const handleMessage = (event) => {
             console.warn('MessageSent missing payload:', event);
             return;
         }
+
+        // If this client recently sent the same message, don't append again
+        try {
+            const last = JSON.parse(sessionStorage.getItem('last_sent') || 'null');
+            if (last && last.message === event.message && (Date.now() - last.ts) < 5000) {
+                // clear the marker so future identical messages are handled normally
+                sessionStorage.removeItem('last_sent');
+                return;
+            }
+        } catch (e) {
+            // ignore parse errors
+        }
+
         console.log('Message received:', event.message);
-        // show alert on every connected window
-        //alert(event.message); // <-- important: shows modal to all listeners
         const box = document.getElementById('messages');
         if (!box) return;
         box.innerHTML += `<div><b>Other:</b> ${event.message}</div>`;
+        box.scrollTop = box.scrollHeight;
     } catch (err) {
         console.error('Error processing incoming event:', err);
     }
@@ -100,6 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!msg) return;
 
         console.log('Sending:', msg);
+
+        // mark this message as last sent (used to deduplicate when our broadcast returns)
+        try {
+            sessionStorage.setItem('last_sent', JSON.stringify({ message: msg, ts: Date.now() }));
+        } catch (e) { /* ignore */ }
+
         fetch('/index.php/send-message', {
             method: 'POST',
             headers: {
@@ -116,7 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error('Send error:', err));
 
         const box = document.getElementById('messages');
-        if (box) box.innerHTML += `<div><b>You:</b> ${msg}</div>`;
+        if (box) {
+            box.innerHTML += `<div><b>You:</b> ${msg}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
         input.value = '';
     };
 });
