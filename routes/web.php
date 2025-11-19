@@ -54,7 +54,7 @@ Route::post('/send-message', function (Request $request) {
 
     // normal Laravel broadcast (your current call)
     try {
-        broadcast(new \App\Events\MessageSent($msg));
+        broadcast(new \App\Events\MessageSent($msg))->toOthers();
         Log::info('broadcast(new MessageSent) called');
     } catch (\Throwable $e) {
         Log::error('broadcast() failed: '.$e->getMessage());
