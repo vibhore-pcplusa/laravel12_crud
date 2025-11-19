@@ -6,13 +6,14 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+// use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 // Import the Log facade
 use Illuminate\Support\Facades\Log; // <-- ADD THIS
 
-class MessageSent implements ShouldBroadcast
+class MessageSent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -20,6 +21,12 @@ class MessageSent implements ShouldBroadcast
 
     public function __construct($message)
     {
+        // Validate message is not null or empty
+        if (is_null($message) || (is_string($message) && trim($message) === '')) {
+            Log::error('❌ MessageSent Event received null or empty message.', ['message' => $message]);
+        }else
+        {
+
         // --- 💡 Log: Event Instantiated ---
         Log::info('📦 MessageSent Event instantiated in PHP.', [
             'message_content' => $message,
@@ -27,6 +34,7 @@ class MessageSent implements ShouldBroadcast
         ]);
         
         $this->message = $message;
+        }
     }
 
     public function broadcastOn(): Channel
@@ -44,5 +52,11 @@ class MessageSent implements ShouldBroadcast
         Log::debug('📋 Preparing broadcast payload.', ['payload' => ['message' => $this->message]]);
 
         return ['message' => $this->message];
+    }
+
+    // return a simple client-side event name
+    public function broadcastAs(): string
+    {
+        return 'MessageSent';
     }
 }

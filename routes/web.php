@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\PostController;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return redirect()->route('login');  //view('login');
@@ -45,11 +48,27 @@ Route::get('/chat', function () {
     return ['status' => 'ok'];
 });*/
 
-Route::post('/send-message', function (\Illuminate\Http\Request $request) {
-    $msg = $request->message;
+Route::post('/send-message', function (Request $request) {
+    $msg = (string) $request->message;
     Log::info('POST /send-message received: ' . $msg);
-    broadcast(new \App\Events\MessageSent($request->message));
-    Log::info('Broadcast fired for message: ' . $msg);
+
+    // normal Laravel broadcast (your current call)
+    try {
+        broadcast(new \App\Events\MessageSent($msg));
+        Log::info('broadcast(new MessageSent) called');
+    } catch (\Throwable $e) {
+        Log::error('broadcast() failed: '.$e->getMessage());
+    }
+
+    // direct Pusher/Reverb trigger (bypasses Laravel broadcaster) — debug only
+    try {
+        $pusher = Broadcast::driver('reverb')->getPusher();
+        $pusher->trigger('chat-channel', 'MessageSent', ['message' => $msg]);
+        Log::info('Direct pusher.trigger succeeded for message: ' . $msg);
+    } catch (\Throwable $e) {
+        Log::error('Direct pusher.trigger failed: '.$e->getMessage());
+    }
+
     return response()->json(['status' => 'Message sent!']);
 });
 
