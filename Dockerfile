@@ -34,5 +34,9 @@ COPY . .
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 storage bootstrap/cache
 
+#i am installing redis for docker.     
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
 EXPOSE 80
 CMD ["apache2-foreground"]
